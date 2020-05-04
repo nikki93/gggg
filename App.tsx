@@ -224,15 +224,15 @@ const Canvas = ({ notifyState }: { notifyState: NotifyState }) => {
         justifyContent: 'center',
         padding: commonPadding,
       }}>
-      <View
+      <canvas
+        ref={setCanvasRef}
         style={{
-          borderRadius: 6,
-          overflow: 'hidden',
           width: '100%',
           height: '100%',
-        }}>
-        <canvas ref={setCanvasRef} style={{ width: '100%', height: '100%' }} />
-      </View>
+          borderRadius: 6,
+          overflow: 'hidden',
+        }}
+      />
     </View>
   );
 };
@@ -275,8 +275,9 @@ const UI = ({
             notifyState();
           }}
         />
-        <Typography style={{ paddingTop: commonPadding }}>buttons don't do anything</Typography>
-        <Typography>slider scales rectangles</Typography>
+        <Typography style={{ paddingTop: commonPadding }}>
+          buttons don't do anything, slider scales rectangles
+        </Typography>
       </View>
     </View>
   );
