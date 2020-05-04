@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button';
 import Slider from '@material-ui/core/Slider';
 import ResponsiveCanvas from 'react-responsive-canvas';
 import { createMuiTheme, responsiveFontSizes, ThemeProvider } from '@material-ui/core/styles';
+import palx from 'palx';
 
 import './App.css';
 
@@ -41,30 +42,28 @@ const Fib = () => {
   );
 };
 
+const pal = palx('#07c');
+
+console.log('pal', pal);
+
 let theme = createMuiTheme({
   typography: {
     fontFamily: 'Inter',
     fontSize: 14,
+    button: {
+      textTransform: 'none',
+    },
   },
   palette: {
     primary: {
-      // light: will be calculated from palette.primary.main,
-      main: '#c4a6ed',
-      // dark: will be calculated from palette.primary.main,
-      // contrastText: will be calculated to contrast with palette.primary.main
+      main: pal.indigo[4],
+      dark: pal.indigo[3],
     },
     secondary: {
-      light: '#0066ff',
-      main: '#0044ff',
-      // dark: will be calculated from palette.secondary.main,
-      contrastText: '#ffcc00',
+      main: pal.gray[2],
+      dark: pal.gray[3],
     },
-    // Used by `getContrastText()` to maximize the contrast between
-    // the background and the text.
     contrastThreshold: 3,
-    // Used by the functions below to shift a color's luminance by approximately
-    // two indexes within its tonal palette.
-    // E.g., shift from Red 500 to Red 300 or Red 700.
     tonalOffset: 0.2,
   },
 });
@@ -195,6 +194,10 @@ const UI = () => {
       <View style={{ flexDirection: 'row', paddingBottom: 42 }}>
         <Button variant="contained" color="primary">
           hai
+        </Button>
+        <View style={{ width: 24 }} />
+        <Button variant="contained" color="secondary">
+          ooh
         </Button>
       </View>
       <View>
