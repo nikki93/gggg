@@ -1,21 +1,24 @@
 {
   "files": {
-    "app.js": "/static/js/app.fc869aad.chunk.js",
-    "app.js.map": "/static/js/app.fc869aad.chunk.js.map",
-    "runtime~app.js": "/static/js/runtime~app.34c76111.js",
-    "runtime~app.js.map": "/static/js/runtime~app.34c76111.js.map",
-    "static/js/2.376da0bd.chunk.js": "/static/js/2.376da0bd.chunk.js",
-    "static/js/2.376da0bd.chunk.js.map": "/static/js/2.376da0bd.chunk.js.map",
+    "app.js": "/static/js/app.7661f36e.chunk.js",
+    "app.js.map": "/static/js/app.7661f36e.chunk.js.map",
+    "runtime~app.js": "/static/js/runtime~app.b3244af7.js",
+    "runtime~app.js.map": "/static/js/runtime~app.b3244af7.js.map",
+    "static/js/2.e91c0185.chunk.js": "/static/js/2.e91c0185.chunk.js",
+    "static/js/2.e91c0185.chunk.js.map": "/static/js/2.e91c0185.chunk.js.map",
     "favicon-16.png": "/favicon-16.png",
     "favicon-32.png": "/favicon-32.png",
     "favicon.ico": "/favicon.ico",
     "index.html": "/index.html",
     "manifest.json": "/manifest.json",
-    "serve.json": "/serve.json"
+    "serve.json": "/serve.json",
+    "service-worker.js.map": "/service-worker.js.map",
+    "workbox-12612afb.js": "/workbox-12612afb.js",
+    "workbox-12612afb.js.map": "/workbox-12612afb.js.map"
   },
   "entrypoints": [
-    "static/js/runtime~app.34c76111.js",
-    "static/js/2.376da0bd.chunk.js",
-    "static/js/app.fc869aad.chunk.js"
+    "static/js/runtime~app.b3244af7.js",
+    "static/js/2.e91c0185.chunk.js",
+    "static/js/app.7661f36e.chunk.js"
   ]
 }
