@@ -172,7 +172,7 @@ const UI = () => {
 
 const App = () => {
   return (
-    <View style={{ flex: 1, flexDirection: 'row' }}>
+    <View style={{ width: '100%', height: '100%', flexDirection: 'row' }}>
       <Canvas />
       <UI />
     </View>
