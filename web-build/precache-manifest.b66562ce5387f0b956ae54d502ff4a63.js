@@ -12,12 +12,12 @@ self.__precacheManifest = [
     "url": "/static/js/2.376da0bd.chunk.js"
   },
   {
-    "revision": "48c7ed4e7da9792af288a60d7242d615",
-    "url": "/expo-service-worker.js"
-  },
-  {
     "revision": "d0c694b562b2208635f250762cd7fc79",
     "url": "/serve.json"
+  },
+  {
+    "revision": "48c7ed4e7da9792af288a60d7242d615",
+    "url": "/expo-service-worker.js"
   },
   {
     "revision": "afd5733ac789ab1795f1ed7a26e1ecd3",
