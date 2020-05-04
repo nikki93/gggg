@@ -88,7 +88,7 @@ const Canvas = React.memo(({ notifyStore }: { notifyStore: NotifyStore }) => {
 
   // Listen for canvas resizing
   useLayoutEffect(() => {
-    const measure = () => {
+    const listener = () => {
       if (canvasRef.current) {
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
@@ -97,12 +97,15 @@ const Canvas = React.memo(({ notifyStore }: { notifyStore: NotifyStore }) => {
         (canvasReadyRef as React.MutableRefObject<boolean>).current = true;
       }
     };
-    measure();
-    window.addEventListener('resize', measure);
-    window.addEventListener('scroll', measure);
+    listener();
+    window.addEventListener('resize', listener);
+    window.addEventListener('scroll', listener);
+    const mql = window.matchMedia('(orientation: portrait)');
+    mql.addListener(listener);
     return () => {
-      window.removeEventListener('resize', measure);
-      window.removeEventListener('scroll', measure);
+      window.removeEventListener('resize', listener);
+      window.removeEventListener('scroll', listener);
+      mql.removeListener(listener);
     };
   }, [canvasRef.current]);
 
@@ -295,11 +298,18 @@ const App = () => {
     window.innerWidth > window.innerHeight ? 'row' : 'column'
   );
   useEffect(() => {
-    const onResize = () => {
+    const listener = () => {
       setFlexDirection(window.innerWidth > window.innerHeight ? 'row' : 'column');
     };
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
+    window.addEventListener('resize', listener);
+    window.addEventListener('scroll', listener);
+    const mql = window.matchMedia('(orientation: portrait)');
+    mql.addListener(listener);
+    return () => {
+      window.removeEventListener('resize', listener);
+      window.removeEventListener('scroll', listener);
+      mql.removeListener(listener);
+    };
   }, []);
 
   return (
