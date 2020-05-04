@@ -54,8 +54,8 @@ let theme = createMuiTheme({
   },
   palette: {
     primary: {
-      main: pal.green[4],
-      dark: pal.green[5],
+      main: pal.indigo[4],
+      dark: pal.indigo[5],
     },
     secondary: {
       main: pal.gray[2],
