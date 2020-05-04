@@ -87,17 +87,19 @@ const Canvas = () => {
       }
 
       // Init
-      const N = 5;
+      const N = 40;
       const rects = [];
       {
         // Rects
+        const colorNames = Object.keys(pal);
         for (let i = 0; i < N; ++i) {
           rects[i] = {
             x: W * Math.random(),
             y: H * Math.random(),
-            fillStyle: `rgb(${Math.floor(255 * Math.random())}, ${Math.floor(
-              255 * Math.random()
-            )}, ${Math.floor(255 * Math.random())})`,
+            fillStyle:
+              pal[colorNames[Math.floor(Math.random() * colorNames.length)]][
+                Math.floor(1 + Math.random() * 5)
+              ],
             speed: 0.5 * W * Math.random(),
             w: (W * Math.random()) / 16,
             h: (W * Math.random()) / 16,
