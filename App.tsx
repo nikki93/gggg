@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback, useLayoutEffect } from
 import { Text, View, TouchableOpacity, SafeAreaView } from 'react-native';
 import Button from '@material-ui/core/Button';
 import Slider from '@material-ui/core/Slider';
+import Typography from '@material-ui/core/Typography';
 import { createMuiTheme, responsiveFontSizes, ThemeProvider } from '@material-ui/core/styles';
 import palx from 'palx';
 import ScrollLock, { TouchScrollable } from 'react-scrolllock';
@@ -71,7 +72,17 @@ document.body.style.background = uiBackgroundColor;
 const canvasBackgroundColor = 'white';
 const commonPadding = 38;
 
-const Canvas = () => {
+interface State {
+  scale: number;
+}
+
+type NotifyState = () => void;
+
+const state: State = {
+  scale: 1,
+};
+
+const Canvas = ({ notifyState }: { notifyState: NotifyState }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasReadyRef = useRef<boolean>(false);
 
@@ -178,7 +189,9 @@ const Canvas = () => {
         for (let i = 0; i < N; ++i) {
           const rect = rects[i];
           ctx.fillStyle = rect.fillStyle;
-          ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+          const w = state.scale * rect.w;
+          const h = state.scale * rect.h;
+          ctx.fillRect(rect.x - 0.5 * w, rect.y - 0.5 * h, w, h);
         }
 
         // FPS
@@ -224,7 +237,17 @@ const Canvas = () => {
   );
 };
 
-const UI = ({ isLandscape }: { isLandscape: boolean }) => {
+const UI = ({
+  isLandscape,
+  stateCounter,
+  notifyState,
+}: {
+  isLandscape: boolean;
+  stateCounter: number;
+  notifyState: NotifyState;
+}) => {
+  console.log('re-rendering!', performance.now());
+
   return (
     <View
       style={{
@@ -244,13 +267,29 @@ const UI = ({ isLandscape }: { isLandscape: boolean }) => {
         </Button>
       </View>
       <View>
-        <Slider />
+        <Slider
+          value={state.scale}
+          min={0}
+          max={10}
+          step={0.01}
+          onChange={(_, value) => {
+            state.scale = value as number;
+            notifyState();
+          }}
+        />
+        <Typography style={{ paddingTop: commonPadding }}>buttons don't do anything</Typography>
+        <Typography>slider scales rectangles</Typography>
       </View>
     </View>
   );
 };
 
 const App = () => {
+  const [stateCounter, setStateCounter] = useState(0);
+  const notifyState = () => {
+    setStateCounter(stateCounter + 1);
+  };
+
   const [flexDirection, setFlexDirection] = useState<'row' | 'column'>(
     window.innerWidth > window.innerHeight ? 'row' : 'column'
   );
@@ -269,8 +308,12 @@ const App = () => {
         <ScrollLock>
           <div style={{ width: '100%', height: '100%' }}>
             <View style={{ width: '100%', height: '100%', flexDirection }}>
-              <Canvas />
-              <UI isLandscape={flexDirection == 'row'} />
+              <Canvas notifyState={notifyState} />
+              <UI
+                isLandscape={flexDirection == 'row'}
+                stateCounter={stateCounter}
+                notifyState={notifyState}
+              />
             </View>
           </div>
         </ScrollLock>
