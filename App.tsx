@@ -89,7 +89,7 @@ const Canvas = () => {
       }
 
       // Init
-      const N = 40;
+      const N = 10;
       const rects = [];
       {
         // Rects
