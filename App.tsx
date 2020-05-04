@@ -113,7 +113,7 @@ const Canvas = () => {
       let H = canvas.height;
 
       // Init
-      const N = 10;
+      const N = 100;
       interface Rect {
         x: number;
         y: number;
