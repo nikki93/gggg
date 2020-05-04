@@ -234,14 +234,7 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollLock>
-          <div
-            style={{
-              position: 'fixed',
-              width: '100%',
-              height: '100%',
-              left: 0,
-              top: 0,
-            }}>
+          <div style={{ width: '100%', height: '100%' }}>
             <View style={{ width: '100%', height: '100%', flexDirection }}>
               <Canvas />
               <UI isLandscape={flexDirection == 'row'} />
