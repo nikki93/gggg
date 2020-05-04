@@ -5,7 +5,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "publish": "expo build:web && git add web-build && git commit -m 'web build' && git push origin master"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.12",
