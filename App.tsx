@@ -82,7 +82,7 @@ const state: State = {
   scale: 1,
 };
 
-const Canvas = ({ notifyState }: { notifyState: NotifyState }) => {
+const Canvas = React.memo(({ notifyState }: { notifyState: NotifyState }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasReadyRef = useRef<boolean>(false);
 
@@ -235,7 +235,7 @@ const Canvas = ({ notifyState }: { notifyState: NotifyState }) => {
       />
     </View>
   );
-};
+});
 
 const UI = ({
   isLandscape,
@@ -285,9 +285,9 @@ const UI = ({
 
 const App = () => {
   const [stateCounter, setStateCounter] = useState(0);
-  const notifyState = () => {
-    setStateCounter(stateCounter + 1);
-  };
+  const notifyState = useCallback(() => {
+    setStateCounter((stateCounter) => stateCounter + 1);
+  }, []);
 
   const [flexDirection, setFlexDirection] = useState<'row' | 'column'>(
     window.innerWidth > window.innerHeight ? 'row' : 'column'
