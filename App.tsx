@@ -73,7 +73,7 @@ const canvasBackgroundColor = 'white';
 const commonPadding = 38;
 
 const Canvas = () => {
-  const setCanvasRef = useCallback((canvas) => {
+  const setCanvasRef = useCallback((canvas: HTMLCanvasElement) => {
     if (!canvas) {
       return;
     }
@@ -218,7 +218,7 @@ const UI = ({ isLandscape }) => {
 };
 
 const App = () => {
-  const [flexDirection, setFlexDirection] = useState(
+  const [flexDirection, setFlexDirection] = useState<'row' | 'column'>(
     window.innerWidth > window.innerHeight ? 'row' : 'column'
   );
 
