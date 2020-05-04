@@ -5,6 +5,7 @@ import Slider from '@material-ui/core/Slider';
 import ResponsiveCanvas from 'react-responsive-canvas';
 import { createMuiTheme, responsiveFontSizes, ThemeProvider } from '@material-ui/core/styles';
 import palx from 'palx';
+import ScrollLock, { TouchScrollable } from 'react-scrolllock';
 
 import './App.css';
 
@@ -67,6 +68,7 @@ let theme = createMuiTheme({
 });
 
 const uiBackgroundColor = pal.gray[0];
+document.body.style.background = uiBackgroundColor;
 const canvasBackgroundColor = 'white';
 const commonPadding = 38;
 
@@ -230,14 +232,23 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <View style={{ width: '100%', height: '100%', backgroundColor: uiBackgroundColor }}>
-        <SafeAreaView style={{ flex: 1 }}>
-          <View style={{ width: '100%', height: '100%', flexDirection }}>
-            <Canvas />
-            <UI isLandscape={flexDirection == 'row'} />
-          </View>
-        </SafeAreaView>
-      </View>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollLock>
+          <div
+            style={{
+              position: 'fixed',
+              width: '100%',
+              height: '100%',
+              left: 0,
+              top: 0,
+            }}>
+            <View style={{ width: '100%', height: '100%', flexDirection }}>
+              <Canvas />
+              <UI isLandscape={flexDirection == 'row'} />
+            </View>
+          </div>
+        </ScrollLock>
+      </SafeAreaView>
     </ThemeProvider>
   );
   return;
