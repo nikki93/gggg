@@ -72,17 +72,17 @@ document.body.style.background = uiBackgroundColor;
 const canvasBackgroundColor = 'white';
 const commonPadding = 38;
 
-interface State {
+interface Store {
   scale: number;
 }
 
-type NotifyState = () => void;
+type NotifyStore = () => void;
 
-const state: State = {
+const store: Store = {
   scale: 1,
 };
 
-const Canvas = React.memo(({ notifyState }: { notifyState: NotifyState }) => {
+const Canvas = React.memo(({ notifyStore }: { notifyStore: NotifyStore }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasReadyRef = useRef<boolean>(false);
 
@@ -189,8 +189,8 @@ const Canvas = React.memo(({ notifyState }: { notifyState: NotifyState }) => {
         for (let i = 0; i < N; ++i) {
           const rect = rects[i];
           ctx.fillStyle = rect.fillStyle;
-          const w = state.scale * rect.w;
-          const h = state.scale * rect.h;
+          const w = store.scale * rect.w;
+          const h = store.scale * rect.h;
           ctx.fillRect(rect.x - 0.5 * w, rect.y - 0.5 * h, w, h);
         }
 
@@ -239,12 +239,12 @@ const Canvas = React.memo(({ notifyState }: { notifyState: NotifyState }) => {
 
 const UI = ({
   isLandscape,
-  stateCounter,
-  notifyState,
+  storeCounter,
+  notifyStore,
 }: {
   isLandscape: boolean;
-  stateCounter: number;
-  notifyState: NotifyState;
+  storeCounter: number;
+  notifyStore: NotifyStore;
 }) => {
   return (
     <View
@@ -266,13 +266,13 @@ const UI = ({
       </View>
       <View>
         <Slider
-          value={state.scale}
+          value={store.scale}
           min={0}
           max={10}
           step={0.01}
           onChange={(_, value) => {
-            state.scale = value as number;
-            notifyState();
+            store.scale = value as number;
+            notifyStore();
           }}
         />
         <Typography style={{ paddingTop: commonPadding }}>
@@ -284,10 +284,10 @@ const UI = ({
 };
 
 const App = () => {
-  // State change notification
-  const [stateCounter, setStateCounter] = useState(0);
-  const notifyState = useCallback(() => {
-    setStateCounter((stateCounter) => stateCounter + 1);
+  // Store change notification
+  const [storeCounter, setStoreCounter] = useState(0);
+  const notifyStore = useCallback(() => {
+    setStoreCounter((storeCounter) => storeCounter + 1);
   }, []);
 
   // Track landscape / portrait
@@ -308,11 +308,11 @@ const App = () => {
         <ScrollLock>
           <div style={{ width: '100%', height: '100%' }}>
             <View style={{ width: '100%', height: '100%', flexDirection }}>
-              <Canvas notifyState={notifyState} />
+              <Canvas notifyStore={notifyStore} />
               <UI
                 isLandscape={flexDirection == 'row'}
-                stateCounter={stateCounter}
-                notifyState={notifyState}
+                storeCounter={storeCounter}
+                notifyStore={notifyStore}
               />
             </View>
           </div>
