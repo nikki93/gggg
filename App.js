@@ -1,5 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
+import Button from '@material-ui/core/Button';
+import ResponsiveCanvas from 'react-responsive-canvas';
+
+import './App.css';
 
 const Fib = () => {
   const [message, setMessage] = useState('...');
@@ -23,7 +27,7 @@ const Fib = () => {
     <View
       style={{
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: UI_BACKGROUND_COLOR,
         alignItems: 'center',
         justifyContent: 'center',
       }}>
@@ -35,24 +39,26 @@ const Fib = () => {
   );
 };
 
+const UI_BACKGROUND_COLOR = 'white';
+const CANVAS_BACKGROUND_COLOR = '#fdf9f5';
+
 const Canvas = () => {
   const canvasRef = useRef(null);
 
-  useEffect(() => {
-    (async () => {
-      if (canvasRef) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+  const setCanvasRef = useCallback((newRef) => {
+    canvasRef.current = newRef;
+    if (canvasRef.current) {
+      const canvas = canvasRef.current;
+      const ctx = canvasRef.current.getContext('2d');
 
-        const canvas = canvasRef.current;
-        const ctx = canvasRef.current.getContext('2d');
-
-        // High-DPI
-        const W = 800;
-        const H = 450;
-        const dpi = devicePixelRatio;
-        canvas.width = dpi * W;
-        canvas.height = dpi * H;
-        ctx.scale(dpi, dpi);
+      const setup = () => {
+        // Wait until non-zero size
+        let W = canvas.width;
+        let H = canvas.height;
+        if (W == 0 || H == 0) {
+          requestAnimationFrame(setup);
+          return;
+        }
 
         // Init
         const N = 5;
@@ -102,7 +108,7 @@ const Canvas = () => {
         const draw = () => {
           // Clear
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.fillStyle = 'white';
+          ctx.fillStyle = CANVAS_BACKGROUND_COLOR;
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
           // Rects
@@ -120,35 +126,60 @@ const Canvas = () => {
 
         // Frame loop
         const frame = () => {
+          W = canvas.width;
+          H = canvas.height;
           update();
           draw();
           requestAnimationFrame(frame);
         };
         requestAnimationFrame(frame);
-      }
-    })();
-  }, [canvasRef]);
+      };
+      setup();
+    }
+  }, []);
 
-  // Canvas centered in a black box
+  useEffect(() => {}, [canvasRef]);
+
+  // Canvas centered in a box
   return (
     <View
       style={{
         flex: 1,
-        backgroundColor: 'black',
+        backgroundColor: UI_BACKGROUND_COLOR,
         alignItems: 'center',
         justifyContent: 'center',
+        padding: 24,
       }}>
-      <canvas ref={canvasRef} style={{ width: 800, height: 450 }} />
+      <View
+        style={{
+          borderRadius: 6,
+          overflow: 'hidden',
+          width: '100%',
+          height: '100%',
+        }}>
+        <ResponsiveCanvas canvasRef={setCanvasRef} />
+      </View>
     </View>
   );
 };
 
-const UI = () => {};
+const UI = () => {
+  return (
+    <View style={{ flex: 0.5, backgroundColor: UI_BACKGROUND_COLOR }}>
+      <View style={{ flexDirection: 'row', padding: 24 }}>
+        <Button variant="contained" color="primary">
+          hai
+        </Button>
+      </View>
+    </View>
+  );
+};
 
 const App = () => {
   return (
     <View style={{ flex: 1, flexDirection: 'row' }}>
       <Canvas />
+      <UI />
     </View>
   );
   return;
