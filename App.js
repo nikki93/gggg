@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, SafeAreaView } from 'react-native';
 import Button from '@material-ui/core/Button';
 import Slider from '@material-ui/core/Slider';
 import ResponsiveCanvas from 'react-responsive-canvas';
@@ -230,9 +230,13 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <View style={{ width: '100%', height: '100%', flexDirection }}>
-        <Canvas />
-        <UI isLandscape={flexDirection == 'row'} />
+      <View style={{ width: '100%', height: '100%', backgroundColor: uiBackgroundColor }}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <View style={{ width: '100%', height: '100%', flexDirection }}>
+            <Canvas />
+            <UI isLandscape={flexDirection == 'row'} />
+          </View>
+        </SafeAreaView>
       </View>
     </ThemeProvider>
   );
