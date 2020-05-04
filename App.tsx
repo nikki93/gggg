@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useLayoutEffect } from 'react';
 import { Text, View, TouchableOpacity, SafeAreaView } from 'react-native';
 import Button from '@material-ui/core/Button';
 import Slider from '@material-ui/core/Slider';
-import ResponsiveCanvas from 'react-responsive-canvas';
 import { createMuiTheme, responsiveFontSizes, ThemeProvider } from '@material-ui/core/styles';
 import palx from 'palx';
 import ScrollLock, { TouchScrollable } from 'react-scrolllock';
@@ -13,7 +12,7 @@ const Fib = () => {
   const [message, setMessage] = useState('...');
 
   const onPressRun = () => {
-    const fib = (n) => {
+    const fib = (n: number): number => {
       if (n <= 1) {
         return 1;
       } else {
@@ -73,24 +72,58 @@ const canvasBackgroundColor = 'white';
 const commonPadding = 38;
 
 const Canvas = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasReadyRef = useRef<boolean>(false);
+
+  // Listen for canvas resizing
+  useLayoutEffect(() => {
+    const measure = () => {
+      if (canvasRef.current) {
+        const canvas = canvasRef.current;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = devicePixelRatio * rect.width;
+        canvas.height = devicePixelRatio * rect.height;
+        (canvasReadyRef as React.MutableRefObject<boolean>).current = true;
+      }
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    window.addEventListener('scroll', measure);
+    return () => {
+      window.removeEventListener('resize', measure);
+      window.removeEventListener('scroll', measure);
+    };
+  }, [canvasRef.current]);
+
+  // Listen for canvas ref
   const setCanvasRef = useCallback((canvas: HTMLCanvasElement) => {
+    (canvasRef as React.MutableRefObject<HTMLCanvasElement>).current = canvas;
     if (!canvas) {
       return;
     }
     const ctx = canvas.getContext('2d');
 
     const setup = () => {
-      // Wait until non-zero size
-      let W = canvas.width;
-      let H = canvas.height;
-      if (W == 0 || H == 0) {
+      // Wait until ready
+      if (!(canvasReadyRef.current && ctx)) {
         requestAnimationFrame(setup);
         return;
       }
+      let W = canvas.width;
+      let H = canvas.height;
 
       // Init
       const N = 10;
-      const rects = [];
+      interface Rect {
+        x: number;
+        y: number;
+        fillStyle: string;
+        speed: number;
+        w: number;
+        h: number;
+        phase: number;
+      }
+      const rects: Rect[] = [];
       {
         // Rects
         const colorNames = Object.keys(pal);
@@ -185,13 +218,13 @@ const Canvas = () => {
           width: '100%',
           height: '100%',
         }}>
-        <ResponsiveCanvas canvasRef={setCanvasRef} onResize={() => {}} />
+        <canvas ref={setCanvasRef} style={{ width: '100%', height: '100%' }} />
       </View>
     </View>
   );
 };
 
-const UI = ({ isLandscape }) => {
+const UI = ({ isLandscape }: { isLandscape: boolean }) => {
   return (
     <View
       style={{
