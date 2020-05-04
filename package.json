@@ -6,7 +6,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "publish": "/bin/zsh -c 'source ~/.zshrc && expo build:web && git add web-build && git commit --allow-empty -m 'web build' && git push origin master'"
+    "publish": "/bin/zsh -c 'source ~/.zshrc && expo build:web && git add web-build && git commit --allow-empty -m \"web build\" && git push origin master'"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.12",
