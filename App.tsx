@@ -246,8 +246,6 @@ const UI = ({
   stateCounter: number;
   notifyState: NotifyState;
 }) => {
-  console.log('re-rendering!', performance.now());
-
   return (
     <View
       style={{
