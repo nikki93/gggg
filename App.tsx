@@ -284,15 +284,16 @@ const UI = ({
 };
 
 const App = () => {
+  // State change notification
   const [stateCounter, setStateCounter] = useState(0);
   const notifyState = useCallback(() => {
     setStateCounter((stateCounter) => stateCounter + 1);
   }, []);
 
+  // Track landscape / portrait
   const [flexDirection, setFlexDirection] = useState<'row' | 'column'>(
     window.innerWidth > window.innerHeight ? 'row' : 'column'
   );
-
   useEffect(() => {
     const onResize = () => {
       setFlexDirection(window.innerWidth > window.innerHeight ? 'row' : 'column');
