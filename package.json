@@ -1,12 +1,14 @@
 {
   "main": "node_modules/expo/AppEntry.js",
+  "homepage": "http://nikki93.github.io/gggg",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "publish": "expo build:web && git add web-build && git commit -m 'web build' && git push origin master"
+    "deploy": "gh-pages -d web-build",
+    "predeploy": "expo build:web"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.12",
@@ -19,8 +21,9 @@
     "react-responsive-canvas": "^1.0.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.8.6",
     "babel-preset-expo": "~8.1.0",
-    "@babel/core": "^7.8.6"
+    "gh-pages": "^2.2.0"
   },
   "private": true
 }
