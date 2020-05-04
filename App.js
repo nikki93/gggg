@@ -30,7 +30,7 @@ const Fib = () => {
     <View
       style={{
         flex: 1,
-        backgroundColor: UI_BACKGROUND_COLOR,
+        backgroundColor: uiBackgroundColor,
         alignItems: 'center',
         justifyContent: 'center',
       }}>
@@ -68,8 +68,8 @@ let theme = createMuiTheme({
   },
 });
 
-const UI_BACKGROUND_COLOR = 'white';
-const CANVAS_BACKGROUND_COLOR = '#fdf9f5';
+const uiBackgroundColor = pal.gray[0];
+const canvasBackgroundColor = pal.orange[0];
 
 const Canvas = () => {
   const setCanvasRef = useCallback((canvas) => {
@@ -135,7 +135,7 @@ const Canvas = () => {
       const draw = () => {
         // Clear
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = CANVAS_BACKGROUND_COLOR;
+        ctx.fillStyle = canvasBackgroundColor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         // Rects
@@ -170,7 +170,7 @@ const Canvas = () => {
     <View
       style={{
         flex: 1,
-        backgroundColor: UI_BACKGROUND_COLOR,
+        backgroundColor: uiBackgroundColor,
         alignItems: 'center',
         justifyContent: 'center',
         padding: 42,
@@ -190,7 +190,7 @@ const Canvas = () => {
 
 const UI = () => {
   return (
-    <View style={{ flex: 0.5, backgroundColor: UI_BACKGROUND_COLOR, padding: 42, paddingLeft: 0 }}>
+    <View style={{ flex: 0.5, backgroundColor: uiBackgroundColor, padding: 42, paddingLeft: 0 }}>
       <View style={{ flexDirection: 'row', paddingBottom: 42 }}>
         <Button variant="contained" color="primary">
           hai
