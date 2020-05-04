@@ -42,7 +42,7 @@ const Fib = () => {
   );
 };
 
-const pal = palx('#07c');
+const pal = palx('#b81');
 
 let theme = createMuiTheme({
   typography: {
