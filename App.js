@@ -120,7 +120,7 @@ const Canvas = () => {
         lastUpdateTime = t;
         ++nFramesSinceLastFPSUpdate;
         if (t - lastFPSUpdateTime > 1) {
-          fps = nFramesSinceLastFPSUpdate / (t - lastFPSUpdateTime);
+          fps = Math.floor(nFramesSinceLastFPSUpdate / (t - lastFPSUpdateTime) + 0.5);
           lastFPSUpdateTime = t;
           nFramesSinceLastFPSUpdate = 0;
         }
@@ -150,7 +150,7 @@ const Canvas = () => {
         ctx.fillStyle = 'black';
         ctx.font = '28px Inter';
         ctx.textBaseline = 'top';
-        ctx.fillText(`fps: ${fps.toFixed(2)}`, 32, 32);
+        ctx.fillText(`fps: ${fps}`, 32, 32);
       };
 
       // Frame loop
