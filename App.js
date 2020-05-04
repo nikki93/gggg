@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import Button from '@material-ui/core/Button';
+import Slider from '@material-ui/core/Slider';
 import ResponsiveCanvas from 'react-responsive-canvas';
+import { createMuiTheme, responsiveFontSizes, ThemeProvider } from '@material-ui/core/styles';
 
 import './App.css';
 
@@ -38,6 +40,34 @@ const Fib = () => {
     </View>
   );
 };
+
+let theme = createMuiTheme({
+  typography: {
+    fontFamily: 'Inter',
+    fontSize: 14,
+  },
+  palette: {
+    primary: {
+      // light: will be calculated from palette.primary.main,
+      main: '#c4a6ed',
+      // dark: will be calculated from palette.primary.main,
+      // contrastText: will be calculated to contrast with palette.primary.main
+    },
+    secondary: {
+      light: '#0066ff',
+      main: '#0044ff',
+      // dark: will be calculated from palette.secondary.main,
+      contrastText: '#ffcc00',
+    },
+    // Used by `getContrastText()` to maximize the contrast between
+    // the background and the text.
+    contrastThreshold: 3,
+    // Used by the functions below to shift a color's luminance by approximately
+    // two indexes within its tonal palette.
+    // E.g., shift from Red 500 to Red 300 or Red 700.
+    tonalOffset: 0.2,
+  },
+});
 
 const UI_BACKGROUND_COLOR = 'white';
 const CANVAS_BACKGROUND_COLOR = '#fdf9f5';
@@ -118,8 +148,9 @@ const Canvas = () => {
 
         // FPS
         ctx.fillStyle = 'black';
-        ctx.font = '24px sans';
-        ctx.fillText(`fps: ${fps.toFixed(2)}`, 24, 48);
+        ctx.font = '28px Inter';
+        ctx.textBaseline = 'top';
+        ctx.fillText(`fps: ${fps.toFixed(2)}`, 32, 32);
       };
 
       // Frame loop
@@ -143,7 +174,7 @@ const Canvas = () => {
         backgroundColor: UI_BACKGROUND_COLOR,
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 24,
+        padding: 42,
       }}>
       <View
         style={{
@@ -160,11 +191,14 @@ const Canvas = () => {
 
 const UI = () => {
   return (
-    <View style={{ flex: 0.5, backgroundColor: UI_BACKGROUND_COLOR }}>
-      <View style={{ flexDirection: 'row', padding: 24 }}>
+    <View style={{ flex: 0.5, backgroundColor: UI_BACKGROUND_COLOR, padding: 42, paddingLeft: 0 }}>
+      <View style={{ flexDirection: 'row', paddingBottom: 42 }}>
         <Button variant="contained" color="primary">
           hai
         </Button>
+      </View>
+      <View>
+        <Slider />
       </View>
     </View>
   );
@@ -172,10 +206,12 @@ const UI = () => {
 
 const App = () => {
   return (
-    <View style={{ width: '100%', height: '100%', flexDirection: 'row' }}>
-      <Canvas />
-      <UI />
-    </View>
+    <ThemeProvider theme={theme}>
+      <View style={{ width: '100%', height: '100%', flexDirection: 'row' }}>
+        <Canvas />
+        <UI />
+      </View>
+    </ThemeProvider>
   );
   return;
 };
