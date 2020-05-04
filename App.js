@@ -44,8 +44,6 @@ const Fib = () => {
 
 const pal = palx('#07c');
 
-console.log('pal', pal);
-
 let theme = createMuiTheme({
   typography: {
     fontFamily: 'Inter',
@@ -69,7 +67,8 @@ let theme = createMuiTheme({
 });
 
 const uiBackgroundColor = pal.gray[0];
-const canvasBackgroundColor = pal.orange[0];
+const canvasBackgroundColor = 'white';
+const commonPadding = 38;
 
 const Canvas = () => {
   const setCanvasRef = useCallback((canvas) => {
@@ -173,7 +172,7 @@ const Canvas = () => {
         backgroundColor: uiBackgroundColor,
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 42,
+        padding: commonPadding,
       }}>
       <View
         style={{
@@ -182,16 +181,23 @@ const Canvas = () => {
           width: '100%',
           height: '100%',
         }}>
-        <ResponsiveCanvas canvasRef={setCanvasRef} />
+        <ResponsiveCanvas canvasRef={setCanvasRef} onResize={() => {}} />
       </View>
     </View>
   );
 };
 
-const UI = () => {
+const UI = ({ isLandscape }) => {
   return (
-    <View style={{ flex: 0.5, backgroundColor: uiBackgroundColor, padding: 42, paddingLeft: 0 }}>
-      <View style={{ flexDirection: 'row', paddingBottom: 42 }}>
+    <View
+      style={{
+        flex: 0.5,
+        backgroundColor: uiBackgroundColor,
+        padding: commonPadding,
+        paddingLeft: isLandscape ? 0 : undefined,
+        paddingTop: isLandscape ? undefined : 0,
+      }}>
+      <View style={{ flexDirection: 'row', paddingBottom: commonPadding }}>
         <Button variant="contained" color="primary">
           hai
         </Button>
@@ -208,11 +214,23 @@ const UI = () => {
 };
 
 const App = () => {
+  const [flexDirection, setFlexDirection] = useState(
+    window.innerWidth > window.innerHeight ? 'row' : 'column'
+  );
+
+  useEffect(() => {
+    const onResize = () => {
+      setFlexDirection(window.innerWidth > window.innerHeight ? 'row' : 'column');
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
-      <View style={{ width: '100%', height: '100%', flexDirection: 'row' }}>
+      <View style={{ width: '100%', height: '100%', flexDirection }}>
         <Canvas />
-        <UI />
+        <UI isLandscape={flexDirection == 'row'} />
       </View>
     </ThemeProvider>
   );
