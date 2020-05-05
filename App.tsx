@@ -9,40 +9,6 @@ import ScrollLock, { TouchScrollable } from 'react-scrolllock';
 
 import './App.css';
 
-const Fib = () => {
-  const [message, setMessage] = useState('...');
-
-  const onPressRun = () => {
-    const fib = (n: number): number => {
-      if (n <= 1) {
-        return 1;
-      } else {
-        return fib(n - 1) + fib(n - 2);
-      }
-    };
-
-    const startTime = performance.now();
-    const fibResult = fib(40);
-    const fibTime = 0.001 * (performance.now() - startTime);
-    setMessage(`fib: ${fibResult} -- ${fibTime}`);
-  };
-
-  return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: uiBackgroundColor,
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-      <TouchableOpacity onPress={onPressRun}>
-        <Text>run!</Text>
-      </TouchableOpacity>
-      <Text style={{ marginTop: 16 }}>{message}</Text>
-    </View>
-  );
-};
-
 const pal = palx('#b81');
 
 let theme = createMuiTheme({
