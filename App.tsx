@@ -122,7 +122,7 @@ const Canvas = React.memo((props: { notifyStore: NotifyStore }) => {
       const rects: Rect[] = [];
       {
         // Rects
-        const colorNames = Object.keys(pal).filter(n => n !== 'base' && n !== 'black');
+        const colorNames = Object.keys(pal).filter((n) => n !== 'base' && n !== 'black');
         for (let i = 0; i < N; ++i) {
           rects[i] = {
             x: W * Math.random(),
