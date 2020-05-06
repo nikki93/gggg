@@ -12,6 +12,7 @@
     "@material-ui/core": "^4.9.12",
     "expo": "~37.0.3",
     "palx": "^1.0.3",
+    "pixi.js": "^5.2.4",
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-37.0.1.tar.gz",

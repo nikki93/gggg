@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import { createMuiTheme, responsiveFontSizes, ThemeProvider } from '@material-ui/core/styles';
 import palx from 'palx';
 import ScrollLock, { TouchScrollable } from 'react-scrolllock';
+import * as PIXI from 'pixi.js';
 
 import './App.css';
 
@@ -64,7 +65,7 @@ const store: Store = {
 // Canvas
 //
 
-const Canvas = React.memo(({ notifyStore }: { notifyStore: NotifyStore }) => {
+const Canvas = React.memo((props: { notifyStore: NotifyStore }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasReadyRef = useRef<boolean>(false);
 
@@ -97,11 +98,10 @@ const Canvas = React.memo(({ notifyStore }: { notifyStore: NotifyStore }) => {
     if (!canvas) {
       return;
     }
-    const ctx = canvas.getContext('2d');
 
     const setup = () => {
       // Wait until ready
-      if (!(canvasReadyRef.current && ctx)) {
+      if (!canvasReadyRef.current) {
         requestAnimationFrame(setup);
         return;
       }
@@ -164,27 +164,36 @@ const Canvas = React.memo(({ notifyStore }: { notifyStore: NotifyStore }) => {
       };
 
       // Draw
-      const draw = () => {
-        // Clear
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = canvasBackgroundColor;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const renderer = 'canvas';
+      let draw: () => void;
+      if (renderer == 'canvas') {
+        draw = () => {
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            return;
+          }
 
-        // Rects
-        for (let i = 0; i < N; ++i) {
-          const rect = rects[i];
-          ctx.fillStyle = rect.fillStyle;
-          const w = store.scale * rect.w;
-          const h = store.scale * rect.h;
-          ctx.fillRect(rect.x - 0.5 * w, rect.y - 0.5 * h, w, h);
-        }
+          // Clear
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = canvasBackgroundColor;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // FPS
-        ctx.fillStyle = 'black';
-        ctx.font = '28px Inter';
-        ctx.textBaseline = 'top';
-        ctx.fillText(`fps: ${fps}`, 32, 32);
-      };
+          // Rects
+          for (let i = 0; i < N; ++i) {
+            const rect = rects[i];
+            ctx.fillStyle = rect.fillStyle;
+            const w = store.scale * rect.w;
+            const h = store.scale * rect.h;
+            ctx.fillRect(rect.x - 0.5 * w, rect.y - 0.5 * h, w, h);
+          }
+
+          // FPS
+          ctx.fillStyle = 'black';
+          ctx.font = '28px Inter';
+          ctx.textBaseline = 'top';
+          ctx.fillText(`fps: ${fps}`, 32, 32);
+        };
+      }
 
       // Frame loop
       const frame = () => {
@@ -226,23 +235,15 @@ const Canvas = React.memo(({ notifyStore }: { notifyStore: NotifyStore }) => {
 // UI
 //
 
-const UI = ({
-  isLandscape,
-  storeCounter,
-  notifyStore,
-}: {
-  isLandscape: boolean;
-  storeCounter: number;
-  notifyStore: NotifyStore;
-}) => {
+const UI = (props: { isLandscape: boolean; storeCounter: number; notifyStore: NotifyStore }) => {
   return (
     <View
       style={{
         flex: 0.5,
         backgroundColor: uiBackgroundColor,
         padding: commonPadding,
-        paddingLeft: isLandscape ? 0 : undefined,
-        paddingTop: isLandscape ? undefined : 0,
+        paddingLeft: props.isLandscape ? 0 : undefined,
+        paddingTop: props.isLandscape ? undefined : 0,
       }}>
       <View style={{ flexDirection: 'row', paddingBottom: commonPadding }}>
         <Button variant="contained" color="primary">
@@ -261,14 +262,14 @@ const UI = ({
           step={0.01}
           onChange={(_, value) => {
             store.scale = value as number;
-            notifyStore();
+            props.notifyStore();
           }}
         />
       </View>
       <ScrollView
         style={{
           marginHorizontal: -commonPadding,
-          marginBottom: !isLandscape ? -commonPadding : 0,
+          marginBottom: !props.isLandscape ? -commonPadding : 0,
         }}>
         <View style={{ paddingHorizontal: commonPadding }}>
           <Typography style={{ paddingTop: 0.5 * commonPadding }}>
