@@ -33,7 +33,7 @@ let theme = createMuiTheme({
   },
 });
 
-const uiBackgroundColor = pal.blue[1];
+const uiBackgroundColor = pal.gray[0];
 document.body.style.background = uiBackgroundColor;
 const canvasBackgroundColor = 'white';
 const commonPadding = 38;
