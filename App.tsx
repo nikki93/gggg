@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback, useLayoutEffect } from 'react';
-import { Text, View, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Text, View, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import Button from '@material-ui/core/Button';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
@@ -8,6 +8,10 @@ import palx from 'palx';
 import ScrollLock, { TouchScrollable } from 'react-scrolllock';
 
 import './App.css';
+
+//
+// Style
+//
 
 const pal = palx('#b81');
 
@@ -38,6 +42,10 @@ document.body.style.background = uiBackgroundColor;
 const canvasBackgroundColor = 'white';
 const commonPadding = 38;
 
+//
+// Store
+//
+
 interface Store {
   scale: number;
 }
@@ -47,6 +55,10 @@ type NotifyStore = () => void;
 const store: Store = {
   scale: 1,
 };
+
+//
+// Canvas
+//
 
 const Canvas = React.memo(({ notifyStore }: { notifyStore: NotifyStore }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -206,6 +218,10 @@ const Canvas = React.memo(({ notifyStore }: { notifyStore: NotifyStore }) => {
   );
 });
 
+//
+// UI
+//
+
 const UI = ({
   isLandscape,
   storeCounter,
@@ -224,7 +240,7 @@ const UI = ({
         paddingLeft: isLandscape ? 0 : undefined,
         paddingTop: isLandscape ? undefined : 0,
       }}>
-      <View style={{ flexDirection: 'row', paddingBottom: commonPadding }}>
+      <View style={{ flexDirection: 'row', paddingBottom: 0.5 * commonPadding }}>
         <Button variant="contained" color="primary">
           hai
         </Button>
@@ -233,7 +249,8 @@ const UI = ({
           ooh
         </Button>
       </View>
-      <View>
+      <ScrollView>
+        <View style={{ height: 0.5 * commonPadding }} />
         <Slider
           value={store.scale}
           min={0}
@@ -247,10 +264,15 @@ const UI = ({
         <Typography style={{ paddingTop: commonPadding }}>
           buttons don't do anything, slider scales rectangles
         </Typography>
-      </View>
+        <View style={{ height: 0.5 * commonPadding }} />
+      </ScrollView>
     </View>
   );
 };
+
+//
+// App
+//
 
 const App = () => {
   // Store change notification
