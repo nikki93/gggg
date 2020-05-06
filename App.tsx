@@ -3,7 +3,7 @@ import { Text, View, TouchableOpacity, SafeAreaView, ScrollView } from 'react-na
 import Button from '@material-ui/core/Button';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
-import { createMuiTheme, responsiveFontSizes, ThemeProvider } from '@material-ui/core/styles';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import palx from 'palx';
 import ScrollLock, { TouchScrollable } from 'react-scrolllock';
 import * as PIXI from 'pixi.js';
