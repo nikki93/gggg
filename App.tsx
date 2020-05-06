@@ -65,6 +65,112 @@ const store: Store = {
 // Canvas
 //
 
+const setupCanvas = (canvas: HTMLCanvasElement) => {
+  let W = canvas.width;
+  let H = canvas.height;
+
+  // Init
+  const N = 100;
+  interface Rect {
+    x: number;
+    y: number;
+    fillStyle: string;
+    speed: number;
+    w: number;
+    h: number;
+    phase: number;
+  }
+  const rects: Rect[] = [];
+  {
+    // Rects
+    const colorNames = Object.keys(pal).filter((n) => n !== 'base' && n !== 'black');
+    for (let i = 0; i < N; ++i) {
+      rects[i] = {
+        x: W * Math.random(),
+        y: H * Math.random(),
+        fillStyle:
+          pal[colorNames[Math.floor(Math.random() * colorNames.length)]][
+            Math.floor(1 + Math.random() * 5)
+          ],
+        speed: 0.5 * W * Math.random(),
+        w: (W * Math.random()) / 16,
+        h: (W * Math.random()) / 16,
+        phase: 2 * Math.PI * Math.random(),
+      };
+    }
+  }
+
+  // Update
+  let lastUpdateTime = 0.001 * performance.now();
+  let lastFPSUpdateTime = lastUpdateTime;
+  let nFramesSinceLastFPSUpdate = 0;
+  let fps = 0;
+  const update = () => {
+    // Time
+    const t = 0.001 * performance.now();
+    const dt = t - lastUpdateTime;
+    lastUpdateTime = t;
+    ++nFramesSinceLastFPSUpdate;
+    if (t - lastFPSUpdateTime > 1) {
+      fps = Math.floor(nFramesSinceLastFPSUpdate / (t - lastFPSUpdateTime) + 0.5);
+      lastFPSUpdateTime = t;
+      nFramesSinceLastFPSUpdate = 0;
+    }
+
+    // Rects
+    for (let i = 0; i < N; ++i) {
+      const rect = rects[i];
+      rect.x += rect.speed * Math.sin(t + rect.phase) * dt;
+    }
+  };
+
+  // Draw
+  const renderer = 'canvas';
+  let draw: () => void;
+  if (renderer == 'canvas') {
+    draw = () => {
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        return;
+      }
+
+      // Clear
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = canvasBackgroundColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Rects
+      for (let i = 0; i < N; ++i) {
+        const rect = rects[i];
+        ctx.fillStyle = rect.fillStyle;
+        const w = store.scale * rect.w;
+        const h = store.scale * rect.h;
+        ctx.fillRect(rect.x - 0.5 * w, rect.y - 0.5 * h, w, h);
+      }
+
+      // FPS
+      ctx.fillStyle = 'black';
+      ctx.font = '28px Inter';
+      ctx.textBaseline = 'top';
+      ctx.fillText(`fps: ${fps}`, 32, 32);
+    };
+  }
+
+  // Frame loop
+  const frame = () => {
+    W = canvas.width;
+    H = canvas.height;
+    if (__DEV__ && !document.hasFocus()) {
+      setTimeout(frame, 120);
+    } else {
+      update();
+      draw();
+      requestAnimationFrame(frame);
+    }
+  };
+  requestAnimationFrame(frame);
+};
+
 const Canvas = React.memo((props: { notifyStore: NotifyStore }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasReadyRef = useRef(false);
@@ -99,117 +205,14 @@ const Canvas = React.memo((props: { notifyStore: NotifyStore }) => {
       return;
     }
 
-    const setup = () => {
-      // Wait until ready
+    const setupWhenReady = () => {
       if (!canvasReadyRef.current) {
-        requestAnimationFrame(setup);
-        return;
+        requestAnimationFrame(setupWhenReady);
+      } else {
+        setupCanvas(canvas);
       }
-      let W = canvas.width;
-      let H = canvas.height;
-
-      // Init
-      const N = 100;
-      interface Rect {
-        x: number;
-        y: number;
-        fillStyle: string;
-        speed: number;
-        w: number;
-        h: number;
-        phase: number;
-      }
-      const rects: Rect[] = [];
-      {
-        // Rects
-        const colorNames = Object.keys(pal).filter((n) => n !== 'base' && n !== 'black');
-        for (let i = 0; i < N; ++i) {
-          rects[i] = {
-            x: W * Math.random(),
-            y: H * Math.random(),
-            fillStyle:
-              pal[colorNames[Math.floor(Math.random() * colorNames.length)]][
-                Math.floor(1 + Math.random() * 5)
-              ],
-            speed: 0.5 * W * Math.random(),
-            w: (W * Math.random()) / 16,
-            h: (W * Math.random()) / 16,
-            phase: 2 * Math.PI * Math.random(),
-          };
-        }
-      }
-
-      // Update
-      let lastUpdateTime = 0.001 * performance.now();
-      let lastFPSUpdateTime = lastUpdateTime;
-      let nFramesSinceLastFPSUpdate = 0;
-      let fps = 0;
-      const update = () => {
-        // Time
-        const t = 0.001 * performance.now();
-        const dt = t - lastUpdateTime;
-        lastUpdateTime = t;
-        ++nFramesSinceLastFPSUpdate;
-        if (t - lastFPSUpdateTime > 1) {
-          fps = Math.floor(nFramesSinceLastFPSUpdate / (t - lastFPSUpdateTime) + 0.5);
-          lastFPSUpdateTime = t;
-          nFramesSinceLastFPSUpdate = 0;
-        }
-
-        // Rects
-        for (let i = 0; i < N; ++i) {
-          const rect = rects[i];
-          rect.x += rect.speed * Math.sin(t + rect.phase) * dt;
-        }
-      };
-
-      // Draw
-      const renderer = 'canvas';
-      let draw: () => void;
-      if (renderer == 'canvas') {
-        draw = () => {
-          const ctx = canvas.getContext('2d');
-          if (!ctx) {
-            return;
-          }
-
-          // Clear
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.fillStyle = canvasBackgroundColor;
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-          // Rects
-          for (let i = 0; i < N; ++i) {
-            const rect = rects[i];
-            ctx.fillStyle = rect.fillStyle;
-            const w = store.scale * rect.w;
-            const h = store.scale * rect.h;
-            ctx.fillRect(rect.x - 0.5 * w, rect.y - 0.5 * h, w, h);
-          }
-
-          // FPS
-          ctx.fillStyle = 'black';
-          ctx.font = '28px Inter';
-          ctx.textBaseline = 'top';
-          ctx.fillText(`fps: ${fps}`, 32, 32);
-        };
-      }
-
-      // Frame loop
-      const frame = () => {
-        W = canvas.width;
-        H = canvas.height;
-        if (__DEV__ && !document.hasFocus()) {
-          setTimeout(frame, 120);
-        } else {
-          update();
-          draw();
-          requestAnimationFrame(frame);
-        }
-      };
-      requestAnimationFrame(frame);
     };
-    setup();
+    setupWhenReady();
   }, []);
 
   // Canvas centered in a box
