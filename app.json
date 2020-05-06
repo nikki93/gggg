@@ -3,8 +3,8 @@
     "name": "gggg",
     "slug": "gggg",
     "platforms": [
-      "ios",
-      "android",
+      //"ios",
+      //"android",
       "web"
     ],
     "version": "1.0.0",
