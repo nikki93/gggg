@@ -125,36 +125,32 @@ const setupCanvas = (canvas: HTMLCanvasElement) => {
   };
 
   // Draw
-  const renderer = 'canvas';
-  let draw: () => void;
-  if (renderer == 'canvas') {
-    draw = () => {
-      const ctx = canvas.getContext('2d');
-      if (!ctx) {
-        return;
-      }
+  const draw = () => {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      return;
+    }
 
-      // Clear
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = canvasBackgroundColor;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Clear
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = canvasBackgroundColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Rects
-      for (let i = 0; i < N; ++i) {
-        const rect = rects[i];
-        ctx.fillStyle = rect.fillStyle;
-        const w = store.scale * rect.w;
-        const h = store.scale * rect.h;
-        ctx.fillRect(rect.x - 0.5 * w, rect.y - 0.5 * h, w, h);
-      }
+    // Rects
+    for (let i = 0; i < N; ++i) {
+      const rect = rects[i];
+      ctx.fillStyle = rect.fillStyle;
+      const w = store.scale * rect.w;
+      const h = store.scale * rect.h;
+      ctx.fillRect(rect.x - 0.5 * w, rect.y - 0.5 * h, w, h);
+    }
 
-      // FPS
-      ctx.fillStyle = 'black';
-      ctx.font = '28px Inter';
-      ctx.textBaseline = 'top';
-      ctx.fillText(`fps: ${fps}`, 32, 32);
-    };
-  }
+    // FPS
+    ctx.fillStyle = 'black';
+    ctx.font = '28px Inter';
+    ctx.textBaseline = 'top';
+    ctx.fillText(`fps: ${fps}`, 32, 32);
+  };
 
   // Frame loop
   const frame = () => {
