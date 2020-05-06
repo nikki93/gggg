@@ -67,9 +67,9 @@ const store: Store = {
 
 const Canvas = React.memo((props: { notifyStore: NotifyStore }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const canvasReadyRef = useRef<boolean>(false);
+  const canvasReadyRef = useRef(false);
 
-  // Listen for canvas resizing
+  // Listen for window resize
   useLayoutEffect(() => {
     const listener = () => {
       if (canvasRef.current) {
@@ -77,7 +77,7 @@ const Canvas = React.memo((props: { notifyStore: NotifyStore }) => {
         const rect = canvas.getBoundingClientRect();
         canvas.width = devicePixelRatio * rect.width;
         canvas.height = devicePixelRatio * rect.height;
-        (canvasReadyRef as React.MutableRefObject<boolean>).current = true;
+        canvasReadyRef.current = true;
       }
     };
     listener();
@@ -109,7 +109,7 @@ const Canvas = React.memo((props: { notifyStore: NotifyStore }) => {
       let H = canvas.height;
 
       // Init
-      const N = __DEV__ ? 10 : 98;
+      const N = 100;
       interface Rect {
         x: number;
         y: number;
@@ -122,7 +122,7 @@ const Canvas = React.memo((props: { notifyStore: NotifyStore }) => {
       const rects: Rect[] = [];
       {
         // Rects
-        const colorNames = Object.keys(pal);
+        const colorNames = Object.keys(pal).filter(n => n !== 'base' && n !== 'black');
         for (let i = 0; i < N; ++i) {
           rects[i] = {
             x: W * Math.random(),
@@ -199,9 +199,13 @@ const Canvas = React.memo((props: { notifyStore: NotifyStore }) => {
       const frame = () => {
         W = canvas.width;
         H = canvas.height;
-        update();
-        draw();
-        requestAnimationFrame(frame);
+        if (__DEV__ && !document.hasFocus()) {
+          setTimeout(frame, 120);
+        } else {
+          update();
+          draw();
+          requestAnimationFrame(frame);
+        }
       };
       requestAnimationFrame(frame);
     };
