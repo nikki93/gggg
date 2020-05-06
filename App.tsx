@@ -173,7 +173,7 @@ const setupCanvas = (canvas: HTMLCanvasElement) => {
 
 const Canvas = React.memo((props: { notifyStore: NotifyStore }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const canvasReadyRef = useRef(false);
+  const readyRef = useRef(false);
 
   // Listen for window resize
   useLayoutEffect(() => {
@@ -183,7 +183,7 @@ const Canvas = React.memo((props: { notifyStore: NotifyStore }) => {
         const rect = canvas.getBoundingClientRect();
         canvas.width = devicePixelRatio * rect.width;
         canvas.height = devicePixelRatio * rect.height;
-        canvasReadyRef.current = true;
+        readyRef.current = true;
       }
     };
     listener();
@@ -204,9 +204,8 @@ const Canvas = React.memo((props: { notifyStore: NotifyStore }) => {
     if (!canvas) {
       return;
     }
-
     const setupWhenReady = () => {
-      if (!canvasReadyRef.current) {
+      if (!readyRef.current) {
         requestAnimationFrame(setupWhenReady);
       } else {
         setupCanvas(canvas);
