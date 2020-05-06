@@ -39,6 +39,10 @@ let theme = createMuiTheme({
 
 const uiBackgroundColor = pal.gray[0];
 document.body.style.background = uiBackgroundColor;
+document.body.style.removeProperty('overflow');
+document.body.style.removeProperty('position');
+document.body.style.removeProperty('top');
+document.body.style.removeProperty('width');
 const canvasBackgroundColor = 'white';
 const commonPadding = 38;
 
@@ -105,7 +109,7 @@ const Canvas = React.memo(({ notifyStore }: { notifyStore: NotifyStore }) => {
       let H = canvas.height;
 
       // Init
-      const N = 100;
+      const N = __DEV__ ? 10 : 98;
       interface Rect {
         x: number;
         y: number;
@@ -240,7 +244,7 @@ const UI = ({
         paddingLeft: isLandscape ? 0 : undefined,
         paddingTop: isLandscape ? undefined : 0,
       }}>
-      <View style={{ flexDirection: 'row', paddingBottom: 0.5 * commonPadding }}>
+      <View style={{ flexDirection: 'row', paddingBottom: commonPadding }}>
         <Button variant="contained" color="primary">
           hai
         </Button>
@@ -249,8 +253,7 @@ const UI = ({
           ooh
         </Button>
       </View>
-      <ScrollView>
-        <View style={{ height: 0.5 * commonPadding }} />
+      <View style={{ flexDirection: 'row', paddingBottom: 0.5 * commonPadding }}>
         <Slider
           value={store.scale}
           min={0}
@@ -261,10 +264,17 @@ const UI = ({
             notifyStore();
           }}
         />
-        <Typography style={{ paddingTop: commonPadding }}>
-          buttons don't do anything, slider scales rectangles
-        </Typography>
-        <View style={{ height: 0.5 * commonPadding }} />
+      </View>
+      <ScrollView
+        style={{
+          marginHorizontal: -commonPadding,
+          marginBottom: !isLandscape ? -commonPadding : 0,
+        }}>
+        <View style={{ paddingHorizontal: commonPadding }}>
+          <Typography style={{ paddingTop: 0.5 * commonPadding }}>
+            buttons don't do anything, slider scales rectangles
+          </Typography>
+        </View>
       </ScrollView>
     </View>
   );
@@ -303,18 +313,16 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <SafeAreaView style={{ flex: 1 }}>
-        <ScrollLock>
-          <div style={{ width: '100%', height: '100%' }}>
-            <View style={{ width: '100%', height: '100%', flexDirection }}>
-              <Canvas notifyStore={notifyStore} />
-              <UI
-                isLandscape={flexDirection == 'row'}
-                storeCounter={storeCounter}
-                notifyStore={notifyStore}
-              />
-            </View>
-          </div>
-        </ScrollLock>
+        <div style={{ width: '100%', height: '100%', position: 'fixed', overflow: 'hidden' }}>
+          <View style={{ width: '100%', height: '100%', flexDirection }}>
+            <Canvas notifyStore={notifyStore} />
+            <UI
+              isLandscape={flexDirection == 'row'}
+              storeCounter={storeCounter}
+              notifyStore={notifyStore}
+            />
+          </View>
+        </div>
       </SafeAreaView>
     </ThemeProvider>
   );
