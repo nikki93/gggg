@@ -109,7 +109,7 @@ const Canvas = React.memo((props: { notifyStore: NotifyStore }) => {
       let H = canvas.height;
 
       // Init
-      const N = __DEV__ ? 10 : 98;
+      const N = 10000;
       interface Rect {
         x: number;
         y: number;
@@ -122,15 +122,15 @@ const Canvas = React.memo((props: { notifyStore: NotifyStore }) => {
       const rects: Rect[] = [];
       {
         // Rects
-        const colorNames = Object.keys(pal);
+        const colorNames = Object.keys(pal).filter((n) => n !== 'base' && n !== 'black');
         for (let i = 0; i < N; ++i) {
+          const colorName = colorNames[Math.floor(Math.random() * colorNames.length)];
+          const colorIndex = Math.floor(1 + Math.random() * 5);
+          const fillStyle = pal[colorName][colorIndex];
           rects[i] = {
             x: W * Math.random(),
             y: H * Math.random(),
-            fillStyle:
-              pal[colorNames[Math.floor(Math.random() * colorNames.length)]][
-                Math.floor(1 + Math.random() * 5)
-              ],
+            fillStyle,
             speed: 0.5 * W * Math.random(),
             w: (W * Math.random()) / 16,
             h: (W * Math.random()) / 16,
@@ -152,8 +152,8 @@ const Canvas = React.memo((props: { notifyStore: NotifyStore }) => {
         ++nFramesSinceLastFPSUpdate;
         if (t - lastFPSUpdateTime > 1) {
           fps = Math.floor(nFramesSinceLastFPSUpdate / (t - lastFPSUpdateTime) + 0.5);
-          lastFPSUpdateTime = t;
-          nFramesSinceLastFPSUpdate = 0;
+          //lastFPSUpdateTime = t;
+          //nFramesSinceLastFPSUpdate = 0;
         }
 
         // Rects
@@ -164,9 +164,9 @@ const Canvas = React.memo((props: { notifyStore: NotifyStore }) => {
       };
 
       // Draw
-      const renderer = 'canvas';
+      const renderer: string = 'pixi';
       let draw: () => void;
-      if (renderer == 'canvas') {
+      if (renderer === 'canvas') {
         draw = () => {
           const ctx = canvas.getContext('2d');
           if (!ctx) {
@@ -192,6 +192,44 @@ const Canvas = React.memo((props: { notifyStore: NotifyStore }) => {
           ctx.font = '28px Inter';
           ctx.textBaseline = 'top';
           ctx.fillText(`fps: ${fps}`, 32, 32);
+        };
+      }
+      if (renderer === 'pixi') {
+        const p = new PIXI.Application({
+          width: W,
+          height: H,
+          view: canvas,
+          backgroundColor: 0xffffff,
+        });
+        p.stage.interactive = true;
+
+        const gfxs: PIXI.Graphics[] = [];
+        for (let i = 0; i < N; ++i) {
+          const rect = rects[i];
+          const gfx = new PIXI.Graphics();
+          gfxs[i] = gfx;
+          gfx.beginFill(PIXI.utils.string2hex(rect.fillStyle));
+          gfx.drawRect(-0.5 * rect.w, -0.5 * rect.h, rect.w, rect.h);
+          gfx.position.set(rect.x, rect.y);
+          p.stage.addChild(gfx);
+        }
+
+        const fpsText = new PIXI.Text('fps: 0', {
+          fontFamily: 'Inter',
+          fontSize: 28,
+        });
+        fpsText.position.set(32, 32);
+        p.stage.addChild(fpsText);
+
+        draw = () => {
+          for (let i = 0; i < N; ++i) {
+            const rect = rects[i];
+            const gfx = gfxs[i];
+            gfx.position.set(rect.x, rect.y);
+            gfx.scale.set(store.scale, store.scale);
+          }
+
+          fpsText.text = `fps: ${fps}`;
         };
       }
 
