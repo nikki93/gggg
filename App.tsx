@@ -6,7 +6,6 @@ import Typography from '@material-ui/core/Typography';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import palx from 'palx';
 import ScrollLock, { TouchScrollable } from 'react-scrolllock';
-import * as PIXI from 'pixi.js';
 
 import './App.css';
 
