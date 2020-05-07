@@ -69,10 +69,11 @@ const setupCanvas = (canvas: HTMLCanvasElement) => {
   let H = canvas.height;
 
   // Init
-  const N = 5;
+  const N = 100;
   interface Rect {
     x: number;
     y: number;
+    fillStyle: string;
     speed: number;
     w: number;
     h: number;
@@ -81,13 +82,18 @@ const setupCanvas = (canvas: HTMLCanvasElement) => {
   const rects: Rect[] = [];
   {
     // Rects
+    const colorNames = Object.keys(pal).filter((n) => n !== 'base' && n !== 'black');
     for (let i = 0; i < N; ++i) {
       rects[i] = {
         x: W * Math.random(),
         y: H * Math.random(),
+        fillStyle:
+          pal[colorNames[Math.floor(Math.random() * colorNames.length)]][
+            Math.floor(1 + Math.random() * 5)
+          ],
         speed: 0.5 * W * Math.random(),
-        w: (W * Math.random()) / 8,
-        h: (W * Math.random()) / 8,
+        w: (W * Math.random()) / 16,
+        h: (W * Math.random()) / 16,
         phase: 2 * Math.PI * Math.random(),
       };
     }
@@ -113,14 +119,11 @@ const setupCanvas = (canvas: HTMLCanvasElement) => {
     // Rects
     for (let i = 0; i < N; ++i) {
       const rect = rects[i];
-      rect.x += rect.speed * Math.sin(t + rect.phase) * 0.1 * dt;
+      rect.x += rect.speed * Math.sin(t + rect.phase) * dt;
     }
   };
 
   // Draw
-  const colorNames = Object.keys(pal).filter((n) => n !== 'base' && n !== 'black');
-  const colorName = colorNames[Math.floor(Math.random() * colorNames.length)];
-  const palc = pal[colorName];
   const draw = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) {
@@ -129,71 +132,17 @@ const setupCanvas = (canvas: HTMLCanvasElement) => {
 
     // Clear
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = palc[2];
+    ctx.fillStyle = canvasBackgroundColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.beginPath();
-
+    // Rects
     for (let i = 0; i < N; ++i) {
       const rect = rects[i];
+      ctx.fillStyle = rect.fillStyle;
       const w = store.scale * rect.w;
       const h = store.scale * rect.h;
-      ctx.rect(rect.x - 0.5 * w, rect.y - 0.5 * h, w, h);
+      ctx.fillRect(rect.x - 0.5 * w, rect.y - 0.5 * h, w, h);
     }
-
-    ctx.save();
-
-    const borderRadius = 100;
-    const shadowOffset = 30;
-    const shadowBlur = 90;
-
-    ctx.lineJoin = 'round';
-    ctx.lineWidth = borderRadius;
-    ctx.strokeStyle = palc[2];
-    ctx.fillStyle = palc[2];
-
-    ctx.save();
-    ctx.shadowColor = palc[4];
-    ctx.shadowOffsetX = shadowOffset;
-    ctx.shadowOffsetY = shadowOffset;
-    ctx.shadowBlur = shadowBlur;
-    ctx.stroke();
-    ctx.fill();
-    ctx.restore();
-
-    ctx.save();
-    ctx.shadowColor = palc[0];
-    ctx.shadowOffsetX = -shadowOffset;
-    ctx.shadowOffsetY = -shadowOffset;
-    ctx.shadowBlur = shadowBlur;
-    ctx.stroke();
-    ctx.fill();
-    ctx.restore();
-
-    ctx.stroke();
-    ctx.fill();
-
-    for (let i = 0; i < N; ++i) {
-      const rect = rects[i];
-      const w = store.scale * rect.w;
-      const h = store.scale * rect.h;
-      const x = rect.x - 0.5 * w;
-      const y = rect.y - 0.5 * h;
-      const gradient = ctx.createLinearGradient(
-        x - borderRadius,
-        y - borderRadius,
-        x + w + borderRadius,
-        y + h + borderRadius
-      );
-      gradient.addColorStop(0, palc[3]);
-      gradient.addColorStop(1, palc[1]);
-      ctx.strokeStyle = gradient;
-      ctx.fillStyle = gradient;
-      ctx.strokeRect(x, y, w, h);
-      ctx.fillRect(x, y, w, h);
-    }
-
-    ctx.restore();
 
     // FPS
     ctx.fillStyle = 'black';
