@@ -5,7 +5,6 @@ import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import palx from 'palx';
-import ScrollLock, { TouchScrollable } from 'react-scrolllock';
 
 import './App.css';
 
